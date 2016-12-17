@@ -1,7 +1,10 @@
 var Promise = require('bluebird');
 var request = require('request');
 var cheerio = require('cheerio');
+var phantom = require('phantom');
 var _ = require('lodash');
+var helpers = require('../src/helpers');
+var log = helpers.log;
 var userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36'; // default user-agent to use for requests
 var headers = {'User-Agent': userAgent};
 
@@ -13,6 +16,28 @@ function fetchUrl(url) {
     request({url: url, headers: headers}, function(error, response, body) {
       if(error) reject(error);
       resolve(body);
+    });
+  });
+}
+
+/*
+ * fetch an URL using PhantomJS, evaluate javascript before returning HTML
+ */
+function fetchUrlPhantom(url, options) {
+  return new Promise(function(resolve, reject) {
+    log('Fetching URL:', url, '[phantom]');
+    phantom.create().then(function(ph) {
+      ph.createPage().then(function(page) {
+        page.open(url).then(function(status) {
+          page.evaluate(function() {
+            return document.getElementsByTagName('html')[0].outerHTML;
+          }).then(function(html) {
+            log('Returning HTML...');
+            ph.exit();
+            resolve(html);
+          });
+        })
+      });
     });
   });
 }
@@ -59,5 +84,6 @@ function getType(val) {
 
 module.exports = {
   fetchUrl: fetchUrl,
+  fetchUrlPhantom: fetchUrlPhantom,
   parse: parse,
 }
