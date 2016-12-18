@@ -11,6 +11,11 @@ log('Performing Crawler tests...');
 // fetch HTML of an URL
 // crawler.fetchUrl(config.url).then(log);
 
+var options = {
+  wait: 3000,
+  evaluateJavascript: true, // TODO: better paramater name
+}
+
 
 // fech an URL, then parse the HTML output
 crawler
@@ -18,10 +23,7 @@ crawler
   // first get the HTML from an URL
   // .fetchUrl(config.url) // get raw HTML 
   // .fetchUrlPhantom(config.url) // evaluate javascript
-  .fetchUrlPhantom(config.url, {wait: 3000}) // wait 3 s, evaluate javascript
-  // .then(log) // output HTML
-  
-  // parse HTML
+  // .fetchUrlPhantom(config.url, options) // wait 3 s, evaluate javascript
   .then(function(html) {
     return crawler.parse(html, config.selectors);
   })
