@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var request = require('request');
 var cheerio = require('cheerio');
 var phantom = require('phantom');
+var fs = require('fs');
 var _ = require('lodash');
 var helpers = require('../src/helpers');
 var log = helpers.log;
@@ -52,6 +53,31 @@ function fetchUrlPhantom(url, options) {
 }
 
 /*
+ * download a remote file to a local path
+ */
+function fetchFile(remote, local, callback) {
+  return new Promise(function(resolve, reject) {
+    log('Downloading file:', remote, '...');
+
+    var file = fs.createWriteStream(local);
+    var rem = request(remote);
+    var total = rem.length;
+    var bytes = 0;
+
+    rem.on('data', function(chunk) {
+      file.write(chunk);
+      bytes += chunk.length;
+      log(bytes, 'bytes written');
+    });
+
+    rem.on('end', function(){
+      log('Done writing to file:', local);
+      resolve(local);
+    });
+  });
+}
+
+/*
  * parse a HTML string using an object of jQuery-like selectors
  */
 function parse(data, pattern, requiredSelector) {
@@ -95,5 +121,6 @@ function getType(val) {
 module.exports = {
   fetchUrl: fetchUrl,
   fetchUrlPhantom: fetchUrlPhantom,
+  fetchFile: fetchFile,
   parse: parse,
 }
