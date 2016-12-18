@@ -25,17 +25,26 @@ function fetchUrl(url) {
  */
 function fetchUrlPhantom(url, options) {
   return new Promise(function(resolve, reject) {
-    log('Fetching URL:', url, '[phantom]');
+    log('Fetching URL using PhantomJS:', url);
+    
+    // handle default options
+    options = options || {};
+    options.wait = options.wait || 0;
+  
+    if(options.wait) log('Waiting', options.wait, 'ms');
+
     phantom.create().then(function(ph) {
       ph.createPage().then(function(page) {
         page.open(url).then(function(status) {
-          page.evaluate(function() {
-            return document.getElementsByTagName('html')[0].outerHTML;
-          }).then(function(html) {
-            log('Returning HTML...');
-            ph.exit();
-            resolve(html);
-          });
+          setTimeout(function() {
+            page.evaluate(function() {
+              return document.getElementsByTagName('html')[0].outerHTML;
+            }).then(function(html) {
+              log('Returning HTML');
+              ph.exit();
+              resolve(html);
+            });
+          }, options.wait);
         })
       });
     });
@@ -47,6 +56,7 @@ function fetchUrlPhantom(url, options) {
  */
 function parse(data, pattern, requiredSelector) {
   return new Promise(function(resolve, reject) {
+    log('Parsing HTML');
     if(!requiredSelector) requiredSelector = 'body';
     var results = {};
     var $ = cheerio.load(data); // use cheerio for jQuery-like syntax
