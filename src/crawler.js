@@ -70,6 +70,16 @@ function fetch(url, options) {
 }
 
 /*
+ * wrapper function, combining fetch and parse
+ */
+function scrape(url, pattern, options) {
+  options = options || {};
+  return fetch(url, options).then(function(body) {
+    return parse(body, pattern);
+  });
+}
+
+/*
  * download a remote file to a local path
  */
 function fetchFile(remote, local) {
@@ -141,4 +151,5 @@ module.exports = {
   fetchUrlPhantom: fetchUrlPhantom,
   fetchFile: fetchFile,
   parse: parse,
+  scrape: scrape,
 }
