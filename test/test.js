@@ -18,12 +18,7 @@ var options = {
 
 
 // fech an URL, then parse the HTML output
-crawler
-  
-  // first get the HTML from an URL
-  // .fetchUrl(config.url) // get raw HTML 
-  // .fetchUrlPhantom(config.url) // evaluate javascript
-  // .fetchUrlPhantom(config.url, options) // wait 3 s, evaluate javascript
+crawler.fetch(config.url, options)
   .then(function(html) {
     return crawler.parse(html, config.selectors);
   })
