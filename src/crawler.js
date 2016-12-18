@@ -12,7 +12,7 @@ var headers = {'User-Agent': userAgent};
 /*
  * fetch an URL, return the HTML body as a text string
  */
-function fetchUrl(url) {
+this.fetchUrl = fetchUrl = function(url, options) {
   return new Promise(function(resolve, reject) {
     request({url: url, headers: headers}, function(error, response, body) {
       if(error) reject(error);
@@ -24,7 +24,7 @@ function fetchUrl(url) {
 /*
  * fetch an URL using PhantomJS, evaluate javascript before returning HTML
  */
-function fetchUrlPhantom(url, options) {
+this.fetchUrlPhantom = fetchUrlPhantom = function(url, options) {
   return new Promise(function(resolve, reject) {
     log('Fetching URL using PhantomJS:', url);
     
@@ -53,9 +53,26 @@ function fetchUrlPhantom(url, options) {
 }
 
 /*
+ * wrapper function, using fetchUrl or fetchUrlPhantom
+ * as needed, depending on if we want to evaluate 
+ * javascript or a waiting timeout is provided
+ */
+function fetch(url, options) {
+  options = options || {};
+  options.evaluateJavascript = options.evaluateJavascript || false; // TODO: better parameter name
+  options.wait = options.wait || 0;
+
+  return new Promise(function(resolve, reject) {
+    this[(options.evaluateJavascript || options.wait) ? 'fetchUrlPhantom' : 'fetchUrl'](url, options).then(function(res) {
+      resolve(res);
+    });
+  });
+}
+
+/*
  * download a remote file to a local path
  */
-function fetchFile(remote, local, callback) {
+function fetchFile(remote, local) {
   return new Promise(function(resolve, reject) {
     log('Downloading file:', remote, '...');
 
@@ -119,6 +136,7 @@ function getType(val) {
 
 
 module.exports = {
+  fetch: fetch,
   fetchUrl: fetchUrl,
   fetchUrlPhantom: fetchUrlPhantom,
   fetchFile: fetchFile,
