@@ -2,9 +2,36 @@ var Promise = require('bluebird');
 var fs = require('fs');
 var debug = true;
 
-function log(content) {
-  if(debug) console.log(content);
-  return content;
+function log() {
+  if(debug) {
+    // console.log(content);
+    var args = Array.prototype.slice.call(arguments);
+    var str = '';
+      
+    args.forEach(function (arg) {
+      switch(typeof arg) {
+        default:
+          console.log('=>', 'Unknown type:', typeof arg);
+        break;
+
+        case 'string':
+        case 'number':
+          str += arg + ' ';
+        break;
+
+        case 'object':
+        case 'array':
+          // str += JSON.stringify(arg); // compressed
+          str += JSON.stringify(arg, null, 2); // beauty
+        break;
+      }        
+    });
+
+    console.log(str);
+  }
+
+  return str;
+  // return content;
 }
 
 function readFile(file) {
