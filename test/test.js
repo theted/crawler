@@ -12,18 +12,27 @@ log('Performing Crawler tests...');
 // crawler.fetchUrl(config.url).then(log);
 
 var options = {
-  wait: 3000,
+  wait: 3000, // waiting timeout in ms
   evaluateJavascript: true, // TODO: better paramater name
+  callback: function() {
+    log('Calling callback function...');
+  }
 }
 
 
 // fech an URL, then parse the HTML output
-crawler.fetch(config.url, options)
+crawler
+  .fetch(config.url, options)
   .then(function(html) {
     return crawler.parse(html, config.selectors);
   })
   .then(log) // output parsed HTML object   
 ;
+
+
+// the exact same in a much more consise way, using 
+// crawler heler wrapper function
+crawler.scrape(config.url, config.selectors, options).then(log);
 
 
 // fetch an image and save it locally 
