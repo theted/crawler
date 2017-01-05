@@ -34,6 +34,29 @@ function log() {
   // return content;
 }
 
+// get base name from an URL
+function getHost(url) {
+  return url.replace(/^((\w+:)?\/\/[^\/]+\/?).*$/,'$1');
+}
+
+// get last part of an URL - ie. fileName or URI part
+function lastPart(url) {
+  return removeTrailingSlash(url).split('/').pop();
+}
+
+function removeTrailingSlash(url) {
+  if(url.substr(url.length - 1) == '/') {
+    url = url.substring(0, url.length - 1);
+  }
+  return url;
+}
+
+// sanitize an URL from common mistakes
+function sanitizeUrl(url, baseUrl) {
+  if(url.indexOf(baseUrl) == -1 && url.indexOf('//') == -1) { url = baseUrl + url; }
+  return url;
+}
+
 function readFile(file) {
   return new Promise(function(resolve, reject) {
     fs.readFile(file, 'utf8', function(err, data) {
