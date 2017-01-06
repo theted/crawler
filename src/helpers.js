@@ -57,6 +57,44 @@ function sanitizeUrl(url, baseUrl) {
   return url;
 }
 
+function validateUrl(url) {
+  return true;
+}
+
+// remove redundant white space - tabs, newlines, 
+// carriage & multiple spaces from a string
+function sanitizeString(string) {
+  string = string.replace(/\s\s+/g, ' '); // removes multiple occurencies of whitespaces, might be too agressive..
+  // string = string.replace(/  +/g, ' '); // same as above, but only spaces
+  string = string.trim();
+  return string;
+}
+
+// sanitize an array
+function sanitizeArray(array) {
+  _.each(array,function(value, key) {
+    if(value instanceof Array || value.isArray) {
+      _.each(value, function(val, key) {
+        value[key] = sanitizeString(val);
+      });
+    } else {
+      array[key] = sanitizeString(value);
+    }
+  });
+  return array;
+}
+
+// parse an array, perform callback function for each key 
+// as defined in functions object
+function parseArray(array, functions) {
+  _.each(array, function(item, key) { // loop through each item in array
+    if(key in functions) { // do we have a matching function for key? 
+      array[key] = functions[key](item); // do the matching for the element, callback function determines what is returned here
+    }
+  });
+  return array;
+}
+
 function readFile(file) {
   return new Promise(function(resolve, reject) {
     fs.readFile(file, 'utf8', function(err, data) {
