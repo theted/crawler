@@ -5,12 +5,12 @@ This is a simple crawler, implementing some methods for fetching URL:s and parsi
 
 ## Features
 - use jQuery selector syntax to get elements, powered by cheerio
-- Parallel processing
+- Parallel processing of URLs
 - Ability to follow URLs
 
 
 ## Installation 
-Clone this repo (currently not on NPM).
+Clone this repo (currently not on NPM). Then include it:
 
 ```
 var crawler = require('./crawler/crawler.js');
@@ -20,7 +20,7 @@ var crawler = require('./crawler/crawler.js');
 ## Methods
 
 
-### `crawler.fetch(url)`
+### ```crawler.fetch(url)```
 
 Retreives the HTML of a given `url`
 
@@ -38,19 +38,5 @@ Retreive an URL, parse it using given rules. This is a shorthand for crawler.fet
 url, pattern, options 
 
 
-
-
 ## Examples
-
-### Fetch some URL
-
-### Fetch some stuff 
-
-
-
-
-## TODO
-- Implement the thing
-- Add examples to the documentation 
-- Add links
-- Add proxy support 
+[TODO]
