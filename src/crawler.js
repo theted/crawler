@@ -118,10 +118,23 @@ function parse(data, pattern, requiredSelector) {
       var type = getType(item); // get item type for the current selector
       var itemResults = [];
       $(type.val).each(function() {
-        itemResults.push((type.type == "text")
+        var itemRes = (type.type == "text")
           ? $(this).text()
-          : $(this).attr(type.type)
-        );
+          : $(this).attr(type.type);
+
+
+        itemRes = itemRes
+          .replaceAll('\n\n', '')
+          .replaceAll('\t\t', '')
+          .replaceAll('        ', '')
+          .replaceAll('\n    ', '')
+          .replaceAll('\n\t\n', '')
+          .replaceAll('\n\t', '')
+          .replaceAll('    \n', '')
+          .replaceAll('    ', '') // maybe overkill
+        ;
+
+        itemResults.push(itemRes);
       });
       results[key] = itemResults;
     });
@@ -143,6 +156,21 @@ function getType(val) {
     val: val
   };
 }
+
+
+// moar helper functions ...
+
+String.prototype.replaceAll = function (find, replace) {
+  var str = this;
+  return str.replace(new RegExp(find, 'g'), replace);
+};
+
+function firstRow(str, expr) {
+  var parts = str.split(expr);
+  if(parts.length < 1) parts = [str];
+  return parts[0];
+}
+
 
 
 module.exports = {
