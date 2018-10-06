@@ -155,6 +155,8 @@ function parse(data, pattern, requiredSelector) {
 }
 
 function removeExtraWhitespace(str) {
+    if (typeof str === 'undefined') return ''
+
     return str
         .replaceAll('\n\n', '')
         .replaceAll('\t\t', '')
