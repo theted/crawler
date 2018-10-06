@@ -166,6 +166,7 @@ function removeExtraWhitespace(str) {
         .replaceAll('\n\t', '')
         .replaceAll('    \n', '')
         .replaceAll('    ', '') // maybe overkill
+        .replaceAll('\n', '') // (removes all linebreaks)
 }
 
 function getType(val) {
